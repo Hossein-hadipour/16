@@ -1,0 +1,1964 @@
+﻿<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>فرم تخصصی بازدید و نظارت آموزشی - ناحیه سه شیراز</title>
+  <!-- External Libraries -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="https://cdn.jsdelivr.net/npm/moment@2.29.4/moment.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jalali-moment@3.3.10/dist/jalali-moment.browser.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/signature_pad/1.5.3/signature_pad.min.js"></script>
+  <link href="https://v1.fontapi.ir/css/Vazir:300,400,500" rel="stylesheet">
+
+  <style>
+    body {
+      background: linear-gradient(135deg, #ff6b6b, #f06595);
+      min-height: 100vh;
+      font-family: 'Vazir', sans-serif;
+      font-size: 0.85rem;
+      transition: background-color 0.3s, color 0.3s;
+    }
+    body.dark-mode {
+      background: linear-gradient(135deg, #b91c1c, #831843);
+      color: #e5e7eb;
+    }
+    .container {
+      max-width: 100%;
+      margin: 0 auto;
+      padding: 1rem;
+    }
+    .card {
+      background: white;
+      border-radius: 1rem;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+      transition: transform 0.3s, background-color 0.3s;
+    }
+    .card.dark-mode {
+      background: #4b5563;
+      color: #e5e7eb;
+    }
+    .card:hover {
+      transform: translateY(-5px);
+    }
+    .gradient-btn {
+      background: linear-gradient(90deg, #ef4444, #db2777);
+      color: white;
+      padding: 0.5rem 1.5rem;
+      border: none;
+      border-radius: 1.5rem;
+      font-size: 0.9rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      position: relative;
+      overflow: hidden;
+    }
+    .gradient-btn:hover {
+      background: linear-gradient(90deg, #b91c1c, #a21caf);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
+    }
+    .gradient-btn::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      transition: width 0.6s ease, height 0.6s ease;
+    }
+    .gradient-btn:hover::before {
+      width: 200px;
+      height: 200px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    th, td {
+      border: 1px solid #fecaca;
+      padding: 0.5rem;
+      text-align: right;
+      font-size: 0.8rem;
+    }
+    th {
+      background: #fee2e2;
+      color: #b91c1c;
+      font-weight: 600;
+    }
+    .dark-mode th {
+      background: #9f1239;
+      color: #e5e7eb;
+    }
+    textarea, input[type="number"], input[type="text"], input[type="date"], input[type="tel"], select {
+      width: 100%;
+      font-size: 0.8rem;
+      padding: 0.5rem;
+      border: 1px solid #ef4444;
+      border-radius: 0.5rem;
+      transition: border-color 0.3s;
+      background: white;
+      color: #1f2937;
+    }
+    .dark-mode textarea, .dark-mode input, .dark-mode select {
+      background: #4b5563;
+      color: #e5e7eb;
+      border-color: #831843;
+    }
+    textarea:focus, input:focus, select:focus {
+      border-color: #b91c1c;
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.2);
+    }
+    textarea {
+      resize: vertical;
+    }
+    .average {
+      font-weight: bold;
+      color: #b91c1c;
+    }
+    .dark-mode .average {
+      color: #fda4af;
+    }
+    .footer {
+      text-align: center;
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: #fff;
+      margin-top: 2rem;
+      opacity: 0.9;
+    }
+    .dark-mode .footer {
+      color: #d1d5db;
+    }
+    .tooltip {
+      position: relative;
+      display: inline-block;
+    }
+    .tooltip .tooltiptext {
+      visibility: hidden;
+      width: 200px;
+      background-color: #1f2937;
+      color: #fff;
+      text-align: center;
+      border-radius: 6px;
+      padding: 5px;
+      position: absolute;
+      z-index: 1;
+      bottom: 125%;
+      right: 50%;
+      transform: translateX(50%);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .tooltip:hover .tooltiptext {
+      visibility: visible;
+      opacity: 1;
+    }
+    .search-container {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+    #chartContainer {
+      max-width: 600px;
+      margin: 2rem auto;
+    }
+    .header {
+      text-align: center;
+      color: #fff;
+      font-size: 1.2rem;
+      margin-bottom: 1rem;
+    }
+    .signature-pad {
+      border: 1px solid #ef4444;
+      background-color: white;
+      width: 100%;
+      height: 150px;
+      margin-top: 10px;
+      border-radius: 0.5rem;
+      touch-action: none; /* Ensure touch events are handled properly */
+    }
+    .dark-mode .signature-pad {
+      background-color: #4b5563;
+      border-color: #831843;
+    }
+    @media (max-width: 640px) {
+      .container {
+        padding: 0.75rem;
+      }
+      .card {
+        padding: 1rem;
+        border-radius: 0.75rem;
+      }
+      th, td {
+        padding: 0.3rem;
+        font-size: 0.7rem;
+      }
+      input, textarea, select {
+        font-size: 0.75rem;
+        padding: 0.4rem;
+      }
+      .gradient-btn {
+        padding: 0.6rem 1.2rem;
+        font-size: 0.85rem;
+      }
+      .button-container {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: white;
+        padding: 0.75rem;
+        box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.1);
+        z-index: 10;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        justify-content: center;
+      }
+      .dark-mode .button-container {
+        background: #1f2937;
+      }
+      .grid-cols-2 {
+        grid-template-columns: 1fr;
+      }
+      .search-container {
+        flex-direction: column;
+      }
+      .header {
+        font-size: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    📚 بسم الله الرحمن الرحیم 📚
+  </div>
+
+  <div class="container">
+    <div class="card">
+      <h1 class="text-2xl font-bold text-center text-red-900 mb-4 dark-mode:text-pink-300">فرم تخصصی بازدید و نظارت آموزشی از کلاس درس – مقطع ابتدایی</h1>
+      <p class="text-center text-gray-600 text-sm mb-6 dark-mode:text-gray-400">اداره آموزش و پرورش ناحیه سه شیراز</p>
+
+      <!-- Dark Mode Toggle -->
+      <div class="flex justify-end mb-4">
+        <button id="toggleDarkMode" class="gradient-btn">تغییر به حالت تاریک</button>
+      </div>
+
+      <!-- Advanced Search -->
+      <div class="search-container">
+        <div class="w-full">
+          <label class="block text-xs font-medium text-gray-700 dark-mode:text-gray-300">جستجوی فرم ذخیره‌شده</label>
+          <input id="search_form" type="text" placeholder="جستجو بر اساس نام، کد پرسنلی یا تاریخ">
+        </div>
+        <div class="w-full">
+          <label class="block text-xs font-medium text-gray-700 dark-mode:text-gray-300">انتخاب فرم ذخیره‌شده</label>
+          <select id="load_form_select" class="mt-1 block w-full rounded-md border-gray-300">
+            <option value="">-- هیچ‌کدام --</option>
+          </select>
+        </div>
+        <button onclick="loadForm()" class="gradient-btn px-4 py-1 mt-2">بارگذاری فرم</button>
+      </div>
+
+      <!-- Saved Forms Table -->
+      <div class="card overflow-x-auto">
+        <h2 class="text-lg font-semibold text-red-800 mb-3 dark-mode:text-pink-300">جدول افراد ثبت شده</h2>
+        <table id="saved_forms_table">
+          <thead>
+            <tr>
+              <th>نام آموزگار</th>
+              <th>کد پرسنلی</th>
+              <th>تاریخ بازدید (شمسی)</th>
+              <th>آخرین بروزرسانی</th>
+              <th>عملیات</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Rows will be populated dynamically -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Analytical Dashboard -->
+      <div class="card" id="dashboard">
+        <h2 class="text-lg font-semibold text-red-800 mb-3 dark-mode:text-pink-300">داشبورد تحلیلی</h2>
+        <canvas id="scoreChart"></canvas>
+      </div>
+
+      <!-- General Specifications -->
+      <div class="card">
+        <h2 class="text-lg font-semibold text-red-800 mb-3 dark-mode:text-pink-300">مشخصات عمومی</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-medium text-gray-700 dark-mode:text-gray-300">نام آموزگار</label>
+            <input id="teacher_name" type="text" required>
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-gray-700 dark-mode:text-gray-300">کد پرسنلی</label>
+            <input id="personnel_code" type="text" maxlength="8" pattern="[0-9]{8}" required>
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-gray-700 dark-mode:text-gray-300">شماره همراه آموزگار</label>
+            <input id="teacher_phone" type="tel" pattern="[0-9]{11}" required>
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-gray-700 dark-mode:text-gray-300">پایه تحصیلی</label>
+            <input id="grade_level" type="text" required>
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-gray-700 dark-mode:text-gray-300">نام مدیر</label>
+            <input id="manager_name" type="text" required>
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-gray-700 dark-mode:text-gray-300">نام مدرسه</label>
+            <input id="school_name" type="text" required>
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-gray-700 dark-mode:text-gray-300">نام بازدیدکننده</label>
+            <input id="visitor_name" type="text" required>
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-gray-700 dark-mode:text-gray-300">جنسیت</label>
+            <select id="gender" required>
+              <option value="">انتخاب</option>
+              <option value="مرد">مرد</option>
+              <option value="زن">زن</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-gray-700 dark-mode:text-gray-300">تاریخ بازدید (میلادی)</label>
+            <input id="visit_date" type="date" required>
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-gray-700 dark-mode:text-gray-300">تاریخ بازدید (شمسی)</label>
+            <input id="persian_date" type="text" readonly>
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-gray-700 dark-mode:text-gray-300">شماره همراه مدیر</label>
+            <input id="manager_phone" type="tel" pattern="[0-9]{11}" required>
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-gray-700 dark-mode:text-gray-300">نوع مدرسه</label>
+            <select id="school_type" required>
+              <option value="">انتخاب</option>
+              <option value="دولتی">دولتی</option>
+              <option value="غیردولتی">غیردولتی</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Evaluation Axes -->
+      <div class="card overflow-x-auto" id="axis1">
+        <h2 class="text-lg font-semibold text-red-800 mb-3 dark-mode:text-pink-300">محور اول: کیفیت تدریس و مدیریت یاددهی ـ یادگیری</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>شاخص ارزیابی</th>
+              <th>توضیح / شواهد مشاهده‌شده</th>
+              <th>عالی (۴)</th>
+              <th>خوب (۳)</th>
+              <th>متوسط (۲)</th>
+              <th>ضعیف (۱)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>تهیه و اجرای طرح درس شایستگی‌محور و روزانه</td>
+              <td><textarea rows="2"></textarea></td>
+              <td><input type="radio" name="axis1_1" value="4"></td>
+              <td><input type="radio" name="axis1_1" value="3"></td>
+              <td><input type="radio" name="axis1_1" value="2"></td>
+              <td><input type="radio" name="axis1_1" value="1"></td>
+            </tr>
+            <tr>
+              <td>خلاقیت و تنوع در روش‌های تدریس (فعال، STEAM) به‌منظور یادگیری مؤثر و نقش راهبری معلم</td>
+              <td><textarea rows="2"></textarea></td>
+              <td><input type="radio" name="axis1_2" value="4"></td>
+              <td><input type="radio" name="axis1_2" value="3"></td>
+              <td><input type="radio" name="axis1_2" value="2"></td>
+              <td><input type="radio" name="axis1_2" value="1"></td>
+            </tr>
+            <tr>
+              <td>رعایت بودجه‌بندی درسی</td>
+              <td><textarea rows="2"></textarea></td>
+              <td><input type="radio" name="axis1_3" value="4"></td>
+              <td><input type="radio" name="axis1_3" value="3"></td>
+              <td><input type="radio" name="axis1_3" value="2"></td>
+              <td><input type="radio" name="axis1_3" value="1"></td>
+            </tr>
+            <tr>
+              <td>استفاده از رسانه، فناوری، هوش مصنوعی و وسایل آموزشی</td>
+              <td><textarea rows="2"></textarea></td>
+              <td><input type="radio" name="axis1_4" value="4"></td>
+              <td><input type="radio" name="axis1_4" value="3"></td>
+              <td><input type="radio" name="axis1_4" value="2"></td>
+              <td><input type="radio" name="axis1_4" value="1"></td>
+            </tr>
+            <tr>
+              <td>توجه به مراحل تدریس و نقش راهبردی معلم</td>
+              <td><textarea rows="2"></textarea></td>
+              <td><input type="radio" name="axis1_5" value="4"></td>
+              <td><input type="radio" name="axis1_5" value="3"></td>
+              <td><input type="radio" name="axis1_5" value="2"></td>
+              <td><input type="radio" name="axis1_5" value="1"></td>
+            </tr>
+            <tr>
+              <td>مشارکت فعال دانش‌آموزان و تقویت پرسشگری</td>
+              <td><textarea rows="2"></textarea></td>
+              <td><input type="radio" name="axis1_6" value="4"></td>
+              <td><input type="radio" name="axis1_6" value="3"></td>
+              <td><input type="radio" name="axis1_6" value="2"></td>
+              <td><input type="radio" name="axis1_6" value="1"></td>
+            </tr>
+            <tr>
+              <td>مدیریت کلاس و نظم‌بخشی به فرآیند یادگیری</td>
+              <td><textarea rows="2"></textarea></td>
+              <td><input type="radio" name="axis1_7" value="4"></td>
+              <td><input type="radio" name="axis1_7" value="3"></td>
+              <td><input type="radio" name="axis1_7" value="2"></td>
+              <td><input type="radio" name="axis1_7" value="1"></td>
+            </tr>
+            <tr>
+              <td>ایجاد فضای کلاسی شاد، پویا و متنوع (چیدمان کلاس)</td>
+              <td><textarea rows="2"></textarea></td>
+              <td><input type="radio" name="axis1_8" value="4"></td>
+              <td><input type="radio" name="axis1_8" value="3"></td>
+              <td><input type="radio" name="axis1_8" value="2"></td>
+              <td><input type="radio" name="axis1_8" value="1"></td>
+            </tr>
+            <tr>
+              <td>تلفیق مفاهیم تربیتی و درسی</td>
+              <td><textarea rows="2"></textarea></td>
+              <td><input type="radio" name="axis1_9" value="4"></td>
+              <td><input type="radio" name="axis1_9" value="3"></td>
+              <td><input type="radio" name="axis1_9" value="2"></td>
+              <td><input type="radio" name="axis1_9" value="1"></td>
+            </tr>
+          </tbody>
+        </table>
+        <p class="average mt-2">میانگین محور ۱: <span id="avg1">0</span></p>
+      </div>
+
+      <div class="card overflow-x-auto" id="axis2">
+        <h2 class="text-lg font-semibold text-red-800 mb-3 dark-mode:text-pink-300">محور دوم: ارزشیابی و پایش یادگیری</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>شاخص ارزیابی</th>
+              <th>توضیح / شواهد مشاهده‌شده</th>
+              <th>عالی (۴)</th>
+              <th>خوب (۳)</th>
+              <th>متوسط (۲)</th>
+              <th>ضعیف (۱)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>کاربرد انواع ارزشیابی (آغازین، تکوینی، پایانی)</td>
+              <td><textarea rows="2"></textarea></td>
+              <td><input type="radio" name="axis2_1" value="4"></td>
+              <td><input type="radio" name="axis2_1" value="3"></td>
+              <td><input type="radio" name="axis2_1" value="2"></td>
+              <td><input type="radio" name="axis2_1" value="1"></td>
+            </tr>
+            <tr>
+              <td>استفاده از ابزارهای ارزشیابی (عملکردی، کاغذی، دیجیتال و ...)</td>
+              <td><textarea rows="2"></textarea></td>
+              <td><input type="radio" name="axis2_2" value="4"></td>
+              <td><input type="radio" name="axis2_2" value="3"></td>
+              <td><input type="radio" name="axis2_2" value="2"></td>
+              <td><input type="radio" name="axis2_2" value="1"></td>
+            </tr>
+            <tr>
+              <td>تحلیل نتایج آزمون و ارائه بازخورد مناسب</td>
+              <td><textarea rows="2"></textarea></td>
+              <td><input type="radio" name="axis2_3" value="4"></td>
+              <td><input type="radio" name="axis2_3" value="3"></td>
+              <td><input type="radio" name="axis2_3" value="2"></td>
+              <td><input type="radio" name="axis2_3" value="1"></td>
+            </tr>
+            <tr>
+              <td>توجه به تکالیف هدفمند و متنوع (خلاقیتی، مهارتی، فردی / گروهی)</td>
+              <td><textarea rows="2"></textarea></td>
+              <td><input type="radio" name="axis2_4" value="4"></td>
+              <td><input type="radio" name="axis2_4" value="3"></td>
+              <td><input type="radio" name="axis2_4" value="2"></td>
+              <td><input type="radio" name="axis2_4" value="1"></td>
+            </tr>
+            <tr>
+              <td>تنوع ابزار در پوشه کار دانش‌آموز</td>
+              <td><textarea rows="2"></textarea></td>
+              <td><input type="radio" name="axis2_5" value="4"></td>
+              <td><input type="radio" name="axis2_5" value="3"></td>
+              <td><input type="radio" name="axis2_5" value="2"></td>
+              <td><input type="radio" name="axis2_5" value="1"></td>
+            </tr>
+            <tr>
+              <td>ثبت بازخورد و نتایج یادگیری در دفتر مدیریت کلاسی</td>
+              <td><textarea rows="2"></textarea></td>
+              <td><input> <input type="radio" name="axis2_6" value="4"></td>
+              <td><input type="radio" name="axis2_6" value="3"></td>
+              <td><input type="radio" name="axis2_6" value="2"></td>
+              <td><input type="radio" name="axis2_6" value="1"></td>
+            </tr>
+            <tr>
+              <td>تنظیم و ارائه کارنامه ماهانه</td>
+              <td><textarea rows="2"></textarea></td>
+              <td><input type="radio" name="axis2_7" value="4"></td>
+              <td><input type="radio" name="axis2_7" value="3"></td>
+              <td><input type="radio" name="axis2_7" value="2"></td>
+              <td><input type="radio" name="axis2_7" value="1"></td>
+            </tr>
+          </tbody>
+        </table>
+        <p class="average mt-2">میانگین محور ۲: <span id="avg2">0</span></p>
+      </div>
+
+      <div class="card overflow-x-auto" id="axis3">
+        <h2 class="text-lg font-semibold text-red-800 mb-3 dark-mode:text-pink-300">محور سوم: پایش یادگیری دانش‌آموزان</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>شاخص ارزیابی</th>
+              <th>توضیح / شواهد مشاهده‌شده</th>
+              <th>عالی (۴)</th>
+              <th>خوب (۳)</th>
+              <th>متوسط (۲)</th>
+              <th>ضعیف (۱)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>توجه فراگیران در حل مسئله و پاسخ‌گویی بر اساس روش‌های نوین</td>
+              <td><textarea rows="2"></textarea></td>
+              <td><input type="radio" name="axis3_1" value="4"></td>
+              <td><input type="radio" name="axis3_1" value="3"></td>
+              <td><input type="radio" name="axis3_1" value="2"></td>
+              <td><input type="radio" name="axis3_1" value="1"></td>
+            </tr>
+            <tr>
+              <td>توجه به زیبانویسی دانش‌آموزان</td>
+              <td><textarea rows="2"></textarea></td>
+              <td><input type="radio" name="axis3_2" value="4"></td>
+              <td><input type="radio" name="axis3_2" value="3"></td>
+              <td><input type="radio" name="axis3_2" value="2"></td>
+              <td><input type="radio" name="axis3_2" value="1"></td>
+            </tr>
+            <tr>
+              <td>کیفیت دروس ارائه‌شده با محوریت یادگیری دروس زیر:</td>
+              <td><textarea rows="2"></textarea></td>
+              <td><input type="radio" name="axis3_3" value="4"></td>
+              <td><input type="radio" name="axis3_3" value="3"></td>
+              <td><input type="radio" name="axis3_3" value="2"></td>
+              <td><input type="radio" name="axis3_3" value="1"></td>
+            </tr>
+            <tr>
+              <td>قرآن و هدیه‌های آسمانی</td>
+              <td><textarea rows="2"></textarea></td>
+              <td><input type="radio" name="axis3_4" value="4"></td>
+              <td><input type="radio" name="axis3_4" value="3"></td>
+              <td><input type="radio" name="axis3_4" value="2"></td>
+              <td><input type="radio" name="axis3_4" value="1"></td>
+            </tr>
+            <tr>
+              <td>تعلیمات اجتماعی</td>
+              <td><textarea rows="2"></textarea></td>
+              <td><input type="radio" name="axis3_5" value="4"></td>
+              <td><input type="radio" name="axis3_5" value="3"></td>
+              <td><input type="radio" name="axis3_5" value="2"></td>
+              <td><input type="radio" name="axis3_5" value="1"></td>
+            </tr>
+            <tr>
+              <td>ریاضی</td>
+              <td><textarea rows="2"></textarea></td>
+              <td><input type="radio" name="axis3_6" value="4"></td>
+              <td><input type="radio" name="axis3_6" value="3"></td>
+              <td><input type="radio" name="axis3_6" value="2"></td>
+              <td><input type="radio" name="axis3_6" value="1"></td>
+            </tr>
+            <tr>
+              <td>فارسی</td>
+              <td><textarea rows="2"></textarea></td>
+              <td><input type="radio" name="axis3_7" value="4"></td>
+              <td><input type="radio" name="axis3_7" value="3"></td>
+              <td><input type="radio" name="axis3_7" value="2"></td>
+              <td><input type="radio" name="axis3_7" value="1"></td>
+            </tr>
+            <tr>
+              <td>علوم تجربی</td>
+              <td><textarea rows="2"></textarea></td>
+              <td><input type="radio" name="axis3_8" value="4"></td>
+              <td><input type="radio" name="axis3_8" value="3"></td>
+              <td><input type="radio" name="axis3_8" value="2"></td>
+              <td><input type="radio" name="axis3_8" value="1"></td>
+            </tr>
+            <tr>
+              <td>هنر، کار و فناوری، تفکر و پژوهش</td>
+              <td><textarea rows="2"></textarea></td>
+              <td><input type="radio" name="axis3_9" value="4"></td>
+              <td><input type="radio" name="axis3_9" value="3"></td>
+              <td><input type="radio" name="axis3_9" value="2"></td>
+              <td><input type="radio" name="axis3_9" value="1"></td>
+            </tr>
+          </tbody>
+        </table>
+        <p class="average mt-2">میانگین محور ۳: <span id="avg3">0</span></p>
+      </div>
+
+      <div class="card overflow-x-auto" id="axis4">
+        <h2 class="text-lg font-semibold text-red-800 mb-3 dark-mode:text-pink-300">محور چهارم: نظم، برنامه‌ریزی و مسئولیت‌پذیری</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>شاخص ارزیابی</th>
+              <th>توضیح / شواهد مشاهده‌شده</th>
+              <th>عالی (۴)</th>
+              <th>خوب (۳)</th>
+              <th>متوسط (۲)</th>
+              <th>ضعیف (۱)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>رعایت نظم در ورود و خروج و زمان‌بندی فعالیت‌ها</td>
+              <td><textarea rows="2"></textarea></td>
+              <td><input type="radio" name="axis4_1" value="4"></td>
+              <td><input type="radio" name="axis4_1" value="3"></td>
+              <td><input type="radio" name="axis4_1" value="2"></td>
+              <td><input type="radio" name="axis4_1" value="1"></td>
+            </tr>
+            <tr>
+              <td>برنامه‌ریزی هفتگی / ماهانه و انعطاف‌پذیری در اجرا با توجه به برنامه درسی ملی</td>
+              <td><textarea rows="2"></textarea></td>
+              <td><input type="radio" name="axis4_2" value="4"></td>
+              <td><input type="radio" name="axis4_2" value="3"></td>
+              <td><input type="radio" name="axis4_2" value="2"></td>
+              <td><input type="radio" name="axis4_2" value="1"></td>
+            </tr>
+            <tr>
+              <td>توجه به نکات آموزشی در شورای معلمان</td>
+              <td><textarea rows="2"></textarea></td>
+              <td><input type="radio" name="axis4_3" value="4"></td>
+              <td><input type="radio" name="axis4_3" value="3"></td>
+              <td><input type="radio" name="axis4_3" value="2"></td>
+              <td><input type="radio" name="axis4_3" value="1"></td>
+            </tr>
+            <tr>
+              <td>تحلیل نتایج آزمون و ارائه بازخورد مناسب</td>
+              <td><textarea rows="2"></textarea></td>
+              <td><input type="radio" name="axis4_4" value="4"></td>
+              <td><input type="radio" name="axis4_4" value="3"></td>
+              <td><input type="radio" name="axis4_4" value="2"></td>
+              <td><input type="radio" name="axis4_4" value="1"></td>
+            </tr>
+          </tbody>
+        </table>
+        <p class="average mt-2">میانگین محور ۴: <span id="avg4">0</span></p>
+      </div>
+
+      <div class="card overflow-x-auto" id="axis5">
+        <h2 class="text-lg font-semibold text-red-800 mb-3 dark-mode:text-pink-300">محور پنجم: تعامل و ارتباط مؤثر</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>شاخص ارزیابی</th>
+              <th>توضیح / شواهد مشاهده‌شده</th>
+              <th>عالی (۴)</th>
+              <th>خوب (۳)</th>
+              <th>متوسط (۲)</th>
+              <th>ضعیف (۱)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>ارتباط سازنده با دانش‌آموزان و ایجاد فضای بدون استرس و اضطراب</td>
+              <td><textarea rows="2"></textarea></td>
+              <td><input type="radio" name="axis5_1" value="4"></td>
+              <td><input type="radio" name="axis5_1" value="3"></td>
+              <td><input type="radio" name="axis5_1" value="2"></td>
+              <td><input type="radio" name="axis5_1" value="1"></td>
+            </tr>
+            <tr>
+              <td>تعامل مؤثر با اولیا و جلب مشارکت آنان</td>
+              <td><textarea rows="2"></textarea></td>
+              <td><input type="radio" name="axis5_2" value="4"></td>
+              <td><input type="radio" name="axis5_2" value="3"></td>
+              <td><input type="radio" name="axis5_2" value="2"></td>
+              <td><input type="radio" name="axis5_2" value="1"></td>
+            </tr>
+            <tr>
+              <td>همکاری و مشارکت در فضای مدرسه</td>
+              <td><textarea rows="2"></textarea></td>
+              <td><input type="radio" name="axis5_3" value="4"></td>
+              <td><input type="radio" name="axis5_3" value="3"></td>
+              <td><input type="radio" name="axis5_3" value="2"></td>
+              <td><input type="radio" name="axis5_3" value="1"></td>
+            </tr>
+            <tr>
+              <td>ایجاد روحیه همدلی، گذشت و احترام متقابل بین همکاران، دانش‌آموزان و اولیا</td>
+              <td><textarea rows="2"></textarea></td>
+              <td><input type="radio" name="axis5_4" value="4"></td>
+              <td><input type="radio" name="axis5_4" value="3"></td>
+              <td><input type="radio" name="axis5_4" value="2"></td>
+              <td><input type="radio" name="axis5_4" value="1"></td>
+            </tr>
+          </tbody>
+        </table>
+        <p class="average mt-2">میانگین محور ۵: <span id="avg5">0</span></p>
+      </div>
+
+      <div class="card overflow-x-auto" id="axis6">
+        <h2 class="text-lg font-semibold text-red-800 mb-3 dark-mode:text-pink-300">محور ششم: توسعه حرفه‌ای و اخلاقی</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>شاخص ارزیابی</th>
+              <th>توضیح / شواهد مشاهده‌شده</th>
+              <th>عالی (۴)</th>
+              <th>خوب (۳)</th>
+              <th>متوسط (۲)</th>
+              <th>ضعیف (۱)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>آموزش مهارت‌های اجتماعی (کار گروهی، حل مسئله)</td>
+              <td><textarea rows="2"></textarea></td>
+              <td><input type="radio" name="axis6_1" value="4"></td>
+              <td><input type="radio" name="axis6_1" value="3"></td>
+              <td><input type="radio" name="axis6_1" value="2"></td>
+              <td><input type="radio" name="axis6_1" value="1"></td>
+            </tr>
+            <tr>
+              <td>ترویج ارزش‌های اخلاقی و دینی</td>
+              <td><textarea rows="2"></textarea></td>
+              <td><input type="radio" name="axis6_2" value="4"></td>
+              <td><input type="radio" name="axis6_2" value="3"></td>
+              <td><input type="radio" name="axis6_2" value="2"></td>
+              <td><input type="radio" name="axis6_2" value="1"></td>
+            </tr>
+            <tr>
+              <td>رعایت اخلاق حرفه‌ای و حریم خصوصی</td>
+              <td><textarea rows="2"></textarea></td>
+              <td><input type="radio" name="axis6_3" value="4"></td>
+              <td><input type="radio" name="axis6_3" value="3"></td>
+              <td><input type="radio" name="axis6_3" value="2"></td>
+              <td><input type="radio" name="axis6_3" value="1"></td>
+            </tr>
+            <tr>
+              <td>برخورد منطقی و عادلانه با رفتارهای چالشی</td>
+              <td><textarea rows="2"></textarea></td>
+              <td><input type="radio" name="axis6_4" value="4"></td>
+              <td><input type="radio" name="axis6_4" value="3"></td>
+              <td><input type="radio" name="axis6_4" value="2"></td>
+              <td><input type="radio" name="axis6_4" value="1"></td>
+            </tr>
+            <tr>
+              <td>مشارکت در تصمیم‌سازی و ارائه پیشنهاد در امور آموزشی</td>
+              <td><textarea rows="2"></textarea></td>
+              <td><input type="radio" name="axis6_5" value="4"></td>
+              <td><input type="radio" name="axis6_5" value="3"></td>
+              <td><input type="radio" name="axis6_5" value="2"></td>
+              <td><input type="radio" name="axis6_5" value="1"></td>
+            </tr>
+            <tr>
+              <td>توجه به مناسبت‌های ملی و مذهبی</td>
+              <td><textarea rows="2"></textarea></td>
+              <td><input type="radio" name="axis6_6" value="4"></td>
+              <td><input type="radio" name="axis6_6" value="3"></td>
+              <td><input type="radio" name="axis6_6" value="2"></td>
+              <td><input type="radio" name="axis6_6" value="1"></td>
+            </tr>
+            <tr>
+              <td>خلاقیت در فعالیت‌های آموزشی و پرورشی</td>
+              <td><textarea rows="2"></textarea></td>
+              <td><input type="radio" name="axis6_7" value="4"></td>
+              <td><input type="radio" name="axis6_7" value="3"></td>
+              <td><input type="radio" name="axis6_7" value="2"></td>
+              <td><input type="radio" name="axis6_7" value="1"></td>
+            </tr>
+          </tbody>
+        </table>
+        <p class="average mt-2">میانگین محور ۶: <span id="avg6">0</span></p>
+      </div>
+
+      <!-- Specialized Analysis -->
+      <div class="card">
+        <h2 class="text-lg font-semibold text-red-800 mb-3 dark-mode:text-pink-300">بخش تحلیل تخصصی</h2>
+        <div class="space-y-4">
+          <div>
+            <label class="block text-xs font-medium text-gray-700 dark-mode:text-gray-300">نکات قوت</label>
+            <textarea id="strengths" rows="4"></textarea>
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-gray-700 dark-mode:text-gray-300">نکات قابل بهبود</label>
+            <textarea id="improvements" rows="4"></textarea>
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-gray-700 dark-mode:text-gray-300">پیشنهادات تخصصی</label>
+            <textarea id="suggestions" rows="4"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <!-- Visitor Analysis Axes -->
+      <div class="card">
+        <h2 class="text-lg font-semibold text-red-800 mb-3 dark-mode:text-pink-300">محورهای تحلیل بازدیدکننده</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>محور</th>
+              <th>توضیح</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>مدیریت کلاس</td>
+              <td><textarea rows="2" class="analysis-textarea"></textarea></td>
+            </tr>
+            <tr>
+              <td>روش تدریس</td>
+              <td><textarea rows="2" class="analysis-textarea"></textarea></td>
+            </tr>
+            <tr>
+              <td>استفاده از فناوری</td>
+              <td><textarea rows="2" class="analysis-textarea"></textarea></td>
+            </tr>
+            <tr>
+              <td>تعامل و ارتباط با دانش‌آموزان</td>
+              <td><textarea rows="2" class="analysis-textarea"></textarea></td>
+            </tr>
+            <tr>
+              <td>ارزشیابی و بازخورد</td>
+              <td><textarea rows="2" class="analysis-textarea"></textarea></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Teacher Self-Assessment -->
+      <div class="card">
+        <h2 class="text-lg font-semibold text-red-800 mb-3 dark-mode:text-pink-300">خودارزیابی معلم</h2>
+        <div class="space-y-4">
+          <div>
+            <label class="block text-xs font-medium text-gray-700 dark-mode:text-gray-300">نقاط قوت تدریس امروز</label>
+            <textarea id="teacher_strengths" rows="4"></textarea>
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-gray-700 dark-mode:text-gray-300">چالش‌های مشاهده‌شده</label>
+            <textarea id="teacher_challenges" rows="4"></textarea>
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-gray-700 dark-mode:text-gray-300">پیشنهاد برای بهبود</label>
+            <textarea id="teacher_suggestions" rows="4"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <!-- Summary Section -->
+      <div class="card">
+        <h2 class="text-lg font-semibold text-red-800 mb-3 dark-mode:text-pink-300">بخش جمع‌بندی</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-medium text-gray-700 dark-mode:text-gray-300">نام آموزگار</label>
+            <input id="summary_teacher_name" type="text" required>
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-gray-700 dark-mode:text-gray-300">پایه تحصیلی</label>
+            <input id="summary_grade" type="text" required>
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-gray-700 dark-mode:text-gray-300">سابقه تدریس در این پایه</label>
+            <input id="summary_experience" type="text" required>
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-gray-700 dark-mode:text-gray-300">مدرسه</label>
+            <input id="summary_school" type="text" required>
+          </div>
+        </div>
+        <div class="mt-4">
+          <label class="block text-xs font-medium text-gray-700 dark-mode:text-gray-300">جمع‌بندی بازدیدکننده</label>
+          <textarea id="visitor_summary" rows="6"></textarea>
+        </div>
+        <div class="mt-4">
+          <label class="block text-xs font-medium text-gray-700 dark-mode:text-gray-300">ارزیابی نهایی</label>
+          <textarea id="final_evaluation" rows="4"></textarea>
+        </div>
+        <div class="mt-4">
+          <label class="block text-xs font-medium text-gray-700 dark-mode:text-gray-300">نام بازدیدکننده</label>
+          <input id="visitor_name_summary" type="text" required>
+        </div>
+        <div class="mt-4">
+          <label class="block text-xs font-medium text-gray-700 dark-mode:text-gray-300">تاریخ بازدید (میلادی)</label>
+          <input id="visit_date_summary" type="date" required>
+        </div>
+        <div class="mt-4">
+          <label class="block text-xs font-medium text-gray-700 dark-mode:text-gray-300">تاریخ بازدید (شمسی)</label>
+          <input id="persian_date_summary" type="text" readonly>
+        </div>
+        <div class="mt-4">
+          <label class="block text-xs font-medium text-gray-700 dark-mode:text-gray-300">امضای بازدیدکننده</label>
+          <canvas id="visitor_signature" class="signature-pad"></canvas>
+          <button onclick="clearSignature('visitor_signature')" class="gradient-btn mt-2">پاک کردن امضا</button>
+        </div>
+        <div class="mt-4">
+          <label class="block text-xs font-medium text-gray-700 dark-mode:text-gray-300">امضای آموزگار</label>
+          <canvas id="teacher_signature" class="signature-pad"></canvas>
+          <button onclick="clearSignature('teacher_signature')" class="gradient-btn mt-2">پاک کردن امضا</button>
+        </div>
+      </div>
+
+      <!-- Smart Analysis -->
+      <div class="card">
+        <h2 class="text-lg font-semibold text-red-800 mb-3 dark-mode:text-pink-300">تحلیل هوشمند</h2>
+        <table class="mt-2" id="smart_analysis">
+          <thead>
+            <tr>
+              <th>محور تحلیل</th>
+              <th>توضیحات</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>تحلیل توانایی</td><td>-</td></tr>
+            <tr><td>تحلیل هوش</td><td>-</td></tr>
+            <tr><td>تحلیل روانشناسی</td><td>-</td></tr>
+            <tr><td>تحلیل عملکرد کلی</td><td>-</td></tr>
+            <tr><td>تحلیل نقاط قوت و ضعف</td><td>-</td></tr>
+            <tr><td>پیشنهادات</td><td>-</td></tr>
+            <tr><td>وضعیت پاداش/تشویق</td><td>-</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p class="average mt-4 text-center">معدل کل: <span id="overall_avg">0</span></p>
+
+      <div class="button-container flex justify-center space-x-2 mt-6 md:space-x-4">
+        <button onclick="startTour()" class="gradient-btn">راهنمای تعاملی</button>
+        <button onclick="fillDefaultValues()" class="gradient-btn">پر کردن پیش‌فرض</button>
+        <button onclick="saveForm()" class="gradient-btn">ذخیره فرم</button>
+        <button onclick="previewForm()" class="gradient-btn">پیش‌نمایش گزارش</button>
+        <button onclick="printForm()" class="gradient-btn">چاپ گزارش (PDF)</button>
+        <button onclick="exportToJSON()" class="gradient-btn">صادرات به JSON</button>
+        <button onclick="importFromJSON()" class="gradient-btn">ورود از JSON</button>
+        <button onclick="exportToExcel()" class="gradient-btn">صادرات به اکسل</button>
+        <button onclick="importFromExcel()" class="gradient-btn">ورود از اکسل</button>
+        <button onclick="clearForm()" class="gradient-btn">پاک کردن فرم</button>
+        <button onclick="clearAllData()" class="gradient-btn">پاک کردن تمام اطلاعات</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    سازنده: حسین هادی پور 🔨
+  </div>
+
+  <input type="file" id="json_import_file" style="display: none;" accept=".json">
+  <input type="file" id="excel_import_file" style="display: none;" accept=".xlsx">
+
+  <script>
+    let chartInstance = null;
+    let visitorSigPad, teacherSigPad;
+
+    // Initialize the form on page load
+    window.onload = function() {
+      // Show welcome message
+      Swal.fire({
+        icon: 'info',
+        title: 'خوش‌آمدگویی',
+        html: 'لطفاً فرم را با دقت پر کنید. تمام تغییرات به صورت خودکار ذخیره می‌شوند.<br>برای راهنمایی، از دکمه "راهنمای تعاملی" استفاده کنید.',
+        confirmButtonText: 'باشه'
+      });
+
+      // Convert Gregorian date to Persian
+      const updatePersianDate = () => {
+        const date = document.getElementById('visit_date').value;
+        if (date) {
+          const persianDate = moment(date).locale('fa').format('YYYY/MM/DD');
+          document.getElementById('persian_date').value = persianDate;
+          document.getElementById('visit_date_summary').value = date;
+          document.getElementById('persian_date_summary').value = persianDate;
+        }
+      };
+
+      document.getElementById('visit_date').addEventListener('change', updatePersianDate);
+      document.getElementById('visit_date_summary').addEventListener('change', () => {
+        const date = document.getElementById('visit_date_summary').value;
+        if (date) {
+          const persianDate = moment(date).locale('fa').format('YYYY/MM/DD');
+          document.getElementById('persian_date_summary').value = persianDate;
+          document.getElementById('visit_date').value = date;
+          document.getElementById('persian_date').value = persianDate;
+        }
+      });
+
+      // Load saved forms
+      loadFormList();
+      loadSavedFormsTable();
+
+      // Advanced search
+      document.getElementById('search_form').addEventListener('input', filterForms);
+
+      // Validate personnel code
+      document.getElementById('personnel_code').addEventListener('input', function() {
+        this.value = this.value.replace(/[^0-9]/g, '');
+        if (this.value.length > 8) {
+          this.value = this.value.slice(0, 8);
+          Swal.fire({
+            icon: 'warning',
+            title: 'هشدار',
+            text: 'کد پرسنلی باید ۸ رقم باشد.',
+          });
+        }
+      });
+
+      // Validate phone numbers
+      document.getElementById('teacher_phone').addEventListener('input', function() {
+        this.value = this.value.replace(/[^0-9]/g, '');
+        if (this.value.length > 11) {
+          this.value = this.value.slice(0, 11);
+          Swal.fire({
+            icon: 'warning',
+            title: 'هشدار',
+            text: 'شماره همراه باید ۱۱ رقم باشد.',
+          });
+        }
+      });
+
+      document.getElementById('manager_phone').addEventListener('input', function() {
+        this.value = this.value.replace(/[^0-9]/g, '');
+        if (this.value.length > 11) {
+          this.value = this.value.slice(0, 11);
+          Swal.fire({
+            icon: 'warning',
+            title: 'هشدار',
+            text: 'شماره همراه باید ۱۱ رقم باشد.',
+          });
+        }
+      });
+
+      // Validate required fields on blur
+      document.querySelectorAll('input[required], select[required]').forEach(input => {
+        input.addEventListener('blur', function() {
+          if (!this.value) {
+            Swal.fire({
+              icon: 'warning',
+              title: 'هشدار',
+              text: `فیلد ${this.previousElementSibling.textContent} اجباری است.`,
+            });
+          }
+        });
+      });
+
+      // Auto-save on change
+      document.querySelectorAll('input, textarea, select').forEach(element => {
+        element.addEventListener('input', () => {
+          autoSaveForm();
+          calculateAverages();
+        });
+      });
+
+      // Initialize signature pads
+      const visitorCanvas = document.getElementById('visitor_signature');
+      const teacherCanvas = document.getElementById('teacher_signature');
+
+      visitorCanvas.width = visitorCanvas.offsetWidth;
+      visitorCanvas.height = 150;
+      teacherCanvas.width = teacherCanvas.offsetWidth;
+      teacherCanvas.height = 150;
+
+      visitorSigPad = new SignaturePad(visitorCanvas, {
+        minWidth: 1,
+        maxWidth: 3,
+        penColor: 'black',
+        onEnd: autoSaveForm
+      });
+
+      teacherSigPad = new SignaturePad(teacherCanvas, {
+        minWidth: 1,
+        maxWidth: 3,
+        penColor: 'black',
+        onEnd: autoSaveForm
+      });
+
+      // Enable touch events for mobile
+      [visitorCanvas, teacherCanvas].forEach(canvas => {
+        canvas.addEventListener('touchstart', (e) => {
+          e.preventDefault();
+          const touch = e.touches[0];
+          const ctx = canvas.getContext('2d');
+          ctx.beginPath();
+          ctx.moveTo(touch.clientX - canvas.getBoundingClientRect().left, touch.clientY - canvas.getBoundingClientRect().top);
+        });
+
+        canvas.addEventListener('touchmove', (e) => {
+          e.preventDefault();
+          const touch = e.touches[0];
+          const ctx = canvas.getContext('2d');
+          ctx.lineTo(touch.clientX - canvas.getBoundingClientRect().left, touch.clientY - canvas.getBoundingClientRect().top);
+          ctx.stroke();
+        });
+      });
+
+      // Initialize chart
+      updateChart();
+
+      // Toggle dark mode
+      document.getElementById('toggleDarkMode').addEventListener('click', toggleDarkMode);
+
+      // Ensure Persian date is updated on load
+      updatePersianDate();
+    };
+
+    /**
+     * Clear signature
+     */
+    function clearSignature(id) {
+      const sigPad = id === 'visitor_signature' ? visitorSigPad : teacherSigPad;
+      sigPad.clear();
+      autoSaveForm();
+    }
+
+    /**
+     * Toggle dark mode
+     */
+    function toggleDarkMode() {
+      document.body.classList.toggle('dark-mode');
+      document.querySelectorAll('.card').forEach(card => card.classList.toggle('dark-mode'));
+      document.querySelectorAll('th, input, textarea, select').forEach(el => el.classList.toggle('dark-mode'));
+      document.querySelector('.button-container').classList.toggle('dark-mode');
+      const button = document.getElementById('toggleDarkMode');
+      button.textContent = document.body.classList.contains('dark-mode') ? 'تغییر به حالت روشن' : 'تغییر به حالت تاریک';
+    }
+
+    /**
+     * Fill default values
+     */
+    function fillDefaultValues() {
+      document.getElementById('teacher_name').value = 'نام نمونه';
+      document.getElementById('personnel_code').value = '12345678';
+      document.getElementById('teacher_phone').value = '09123456789';
+      document.getElementById('grade_level').value = 'پنجم';
+      document.getElementById('manager_name').value = 'مدیر نمونه';
+      document.getElementById('school_name').value = 'مدرسه نمونه';
+      document.getElementById('visitor_name').value = 'بازدیدکننده نمونه';
+      document.getElementById('gender').value = 'مرد';
+      document.getElementById('visit_date').value = moment().format('YYYY-MM-DD');
+      document.getElementById('persian_date').value = moment().locale('fa').format('YYYY/MM/DD');
+      document.getElementById('manager_phone').value = '09123456789';
+      document.getElementById('school_type').value = 'دولتی';
+      document.getElementById('summary_teacher_name').value = 'نام نمونه';
+      document.getElementById('summary_grade').value = 'پنجم';
+      document.getElementById('summary_experience').value = '۵ سال';
+      document.getElementById('summary_school').value = 'مدرسه نمونه';
+      document.getElementById('visitor_name_summary').value = 'بازدیدکننده نمونه';
+      document.getElementById('visit_date_summary').value = moment().format('YYYY-MM-DD');
+      document.getElementById('persian_date_summary').value = moment().locale('fa').format('YYYY/MM/DD');
+      document.getElementById('visitor_summary').value = 'جمع‌بندی نمونه برای ارزیابی عملکرد معلم.';
+      document.getElementById('final_evaluation').value = 'عملکرد کلی قابل قبول است.';
+      document.getElementById('strengths').value = 'نقاط قوت نمونه';
+      document.getElementById('improvements').value = 'نقاط قابل بهبود نمونه';
+      document.getElementById('suggestions').value = 'پیشنهادات نمونه';
+      document.getElementById('teacher_strengths').value = 'نقاط قوت تدریس نمونه';
+      document.getElementById('teacher_challenges').value = 'چالش‌های نمونه';
+      document.getElementById('teacher_suggestions').value = 'پیشنهادات بهبود نمونه';
+      document.querySelectorAll('textarea:not(#strengths, #improvements, #suggestions, #teacher_strengths, #teacher_challenges, #teacher_suggestions, #visitor_summary, #final_evaluation, .analysis-textarea)').forEach(textarea => {
+        textarea.value = 'توضیح نمونه';
+      });
+      document.querySelectorAll('.analysis-textarea').forEach(textarea => {
+        textarea.value = 'تحلیل نمونه';
+      });
+      document.querySelectorAll('input[type="radio"]').forEach(radio => {
+        if (radio.value === '3') radio.checked = true;
+      });
+      calculateAverages();
+      autoSaveForm();
+      Swal.fire({
+        icon: 'success',
+        title: 'پر شد',
+        text: 'تمام فیلدها با مقادیر پیش‌فرض پر شدند.',
+      });
+    }
+
+    /**
+     * Load form list for dropdown
+     */
+    function loadFormList() {
+      const select = document.getElementById('load_form_select');
+      select.innerHTML = '<option value="">-- هیچ‌کدام --</option>';
+      Object.keys(localStorage)
+        .filter(key => key.startsWith('inspection_form_'))
+        .forEach(key => {
+          const formData = JSON.parse(localStorage.getItem(key));
+          const option = document.createElement('option');
+          option.value = key;
+          option.textContent = `${formData.teacher_name} - ${formData.personnel_code} - ${formData.persian_date || formData.visit_date}`;
+          select.appendChild(option);
+        });
+    }
+
+    /**
+     * Load saved forms table
+     */
+    function loadSavedFormsTable() {
+      const tbody = document.getElementById('saved_forms_table').querySelector('tbody');
+      tbody.innerHTML = '';
+      Object.keys(localStorage)
+        .filter(key => key.startsWith('inspection_form_'))
+        .forEach(key => {
+          const formData = JSON.parse(localStorage.getItem(key));
+          const row = document.createElement('tr');
+          row.innerHTML = `
+            <td>${formData.teacher_name}</td>
+            <td>${formData.personnel_code}</td>
+            <td>${formData.persian_date || formData.visit_date}</td>
+            <td>${formData.lastUpdated}</td>
+            <td>
+              <button onclick="editForm('${key}')" class="gradient-btn">ویرایش</button>
+              <button onclick="deleteForm('${key}')" class="gradient-btn">حذف</button>
+            </td>
+          `;
+          tbody.appendChild(row);
+        });
+    }
+
+    /**
+     * Filter forms based on search
+     */
+    function filterForms() {
+      const query = document.getElementById('search_form').value.toLowerCase();
+      const tbody = document.getElementById('saved_forms_table').querySelector('tbody');
+      tbody.innerHTML = '';
+      Object.keys(localStorage)
+        .filter(key => key.startsWith('inspection_form_'))
+        .forEach(key => {
+          const formData = JSON.parse(localStorage.getItem(key));
+          if (
+            formData.teacher_name.toLowerCase().includes(query) ||
+            formData.personnel_code.includes(query) ||
+            (formData.persian_date || formData.visit_date).includes(query)
+          ) {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+              <td>${formData.teacher_name}</td>
+              <td>${formData.personnel_code}</td>
+              <td>${formData.persian_date || formData.visit_date}</td>
+              <td>${formData.lastUpdated}</td>
+              <td>
+                <button onclick="editForm('${key}')" class="gradient-btn">ویرایش</button>
+                <button onclick="deleteForm('${key}')" class="gradient-btn">حذف</button>
+              </td>
+            `;
+            tbody.appendChild(row);
+          }
+        });
+    }
+
+    /**
+     * Start interactive tour
+     */
+    function startTour() {
+      Swal.fire({
+        title: 'راهنمای تعاملی',
+        html: `
+          <p>۱. <b>مشخصات عمومی:</b> تمام فیلدهای این بخش را پر کنید.</p>
+          <p>۲. <b>محورهای ارزیابی:</b> برای هر شاخص، توضیح و امتیاز مناسب را وارد کنید.</p>
+          <p>۳. <b>تحلیل تخصصی:</b> نقاط قوت، قابل بهبود و پیشنهادات را بنویسید.</p>
+          <p>۴. <b>خودارزیابی معلم:</b> ارزیابی معلم از خودش را وارد کنید.</p>
+          <p>۵. <b>جمع‌بندی:</b> جمع‌بندی نهایی و امضاها را تکمیل کنید.</p>
+          <p>۶. <b>تحلیل هوشمند:</b> به صورت خودکار بر اساس امتیازات پر می‌شود.</p>
+          <p>۷. از دکمه‌های پایین برای ذخیره، پیش‌نمایش، چاپ یا صادرات استفاده کنید.</p>
+        `,
+        icon: 'info',
+        confirmButtonText: 'باشه'
+      });
+    }
+
+    /**
+     * Load a saved form
+     */
+    function loadForm() {
+      const key = document.getElementById('load_form_select').value;
+      if (!key) {
+        Swal.fire({
+          icon: 'warning',
+          title: 'هشدار',
+          text: 'لطفاً یک فرم را انتخاب کنید.',
+        });
+        return;
+      }
+      const formData = JSON.parse(localStorage.getItem(key));
+      document.getElementById('teacher_name').value = formData.teacher_name || '';
+      document.getElementById('personnel_code').value = formData.personnel_code || '';
+      document.getElementById('teacher_phone').value = formData.teacher_phone || '';
+      document.getElementById('grade_level').value = formData.grade_level || '';
+      document.getElementById('manager_name').value = formData.manager_name || '';
+      document.getElementById('school_name').value = formData.school_name || '';
+      document.getElementById('visitor_name').value = formData.visitor_name || '';
+      document.getElementById('gender').value = formData.gender || '';
+      document.getElementById('visit_date').value = formData.visit_date || '';
+      document.getElementById('persian_date').value = formData.persian_date || '';
+      document.getElementById('manager_phone').value = formData.manager_phone || '';
+      document.getElementById('school_type').value = formData.school_type || '';
+      document.getElementById('summary_teacher_name').value = formData.summary_teacher_name || '';
+      document.getElementById('summary_grade').value = formData.summary_grade || '';
+      document.getElementById('summary_experience').value = formData.summary_experience || '';
+      document.getElementById('summary_school').value = formData.summary_school || '';
+      document.getElementById('visitor_summary').value = formData.visitor_summary || '';
+      document.getElementById('final_evaluation').value = formData.final_evaluation || '';
+      document.getElementById('visitor_name_summary').value = formData.visitor_name_summary || '';
+      document.getElementById('visit_date_summary').value = formData.visit_date || '';
+      document.getElementById('persian_date_summary').value = formData.persian_date || '';
+      document.getElementById('strengths').value = formData.strengths || '';
+      document.getElementById('improvements').value = formData.improvements || '';
+      document.getElementById('suggestions').value = formData.suggestions || '';
+      document.getElementById('teacher_strengths').value = formData.teacher_strengths || '';
+      document.getElementById('teacher_challenges').value = formData.teacher_challenges || '';
+      document.getElementById('teacher_suggestions').value = formData.teacher_suggestions || '';
+
+      const textareas = document.querySelectorAll('textarea:not(#strengths, #improvements, #suggestions, #teacher_strengths, #teacher_challenges, #teacher_suggestions, #visitor_summary, #final_evaluation, .analysis-textarea)');
+      formData.comments.forEach((comment, index) => {
+        if (textareas[index]) textareas[index].value = comment || '';
+      });
+
+      const analysisTextareas = document.querySelectorAll('.analysis-textarea');
+      formData.analysis_comments.forEach((comment, index) => {
+        if (analysisTextareas[index]) analysisTextareas[index].value = comment || '';
+      });
+
+      document.querySelectorAll('input[type="radio"]').forEach(radio => {
+        radio.checked = false;
+      });
+      formData.scores.forEach((score, index) => {
+        const radio = document.querySelector(`input[name="axis${Math.floor(index / 10) + 1}_${(index % 10) + 1}"][value="${score}"]`);
+        if (radio) radio.checked = true;
+      });
+
+      visitorSigPad.fromDataURL(formData.visitor_signature || '');
+      teacherSigPad.fromDataURL(formData.teacher_signature || '');
+
+      calculateAverages();
+      Swal.fire({
+        icon: 'success',
+        title: 'بارگذاری شد',
+        text: 'فرم با موفقیت بارگذاری شد.',
+      });
+    }
+
+    /**
+     * Edit a form
+     */
+    function editForm(key) {
+      document.getElementById('load_form_select').value = key;
+      loadForm();
+    }
+
+    /**
+     * Delete a form
+     */
+    function deleteForm(key) {
+      Swal.fire({
+        title: 'آیا مطمئن هستید؟',
+        text: 'این فرم برای همیشه حذف خواهد شد.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'بله، حذف کن',
+        cancelButtonText: 'خیر'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          localStorage.removeItem(key);
+          loadFormList();
+          loadSavedFormsTable();
+          Swal.fire('حذف شد!', 'فرم با موفقیت حذف شد.', 'success');
+        }
+      });
+    }
+
+    /**
+     * Update chart
+     */
+    function updateChart(data = {}) {
+      const ctx = document.getElementById('scoreChart').getContext('2d');
+      if (chartInstance) chartInstance.destroy();
+
+      chartInstance = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: ['محور ۱', 'محور ۲', 'محور ۳', 'محور ۴', 'محور ۵', 'محور ۶'],
+          datasets: [{
+            label: 'میانگین امتیازات',
+            data: [
+              parseFloat(document.getElementById('avg1').textContent) || 0,
+              parseFloat(document.getElementById('avg2').textContent) || 0,
+              parseFloat(document.getElementById('avg3').textContent) || 0,
+              parseFloat(document.getElementById('avg4').textContent) || 0,
+              parseFloat(document.getElementById('avg5').textContent) || 0,
+              parseFloat(document.getElementById('avg6').textContent) || 0
+            ],
+            backgroundColor: 'rgba(239, 68, 68, 0.6)',
+            borderColor: 'rgba(239, 68, 68, 1)',
+            borderWidth: 1
+          }]
+        },
+        options: {
+          scales: {
+            y: { beginAtZero: true, max: 4 }
+          }
+        }
+      });
+    }
+
+    /**
+     * Calculate averages for each axis
+     */
+    function calculateAverages() {
+      const axes = [
+        { id: 'axis1', avgId: 'avg1', count: 9 },
+        { id: 'axis2', avgId: 'avg2', count: 7 },
+        { id: 'axis3', avgId: 'avg3', count: 9 },
+        { id: 'axis4', avgId: 'avg4', count: 4 },
+        { id: 'axis5', avgId: 'avg5', count: 4 },
+        { id: 'axis6', avgId: 'avg6', count: 7 }
+      ];
+
+      let totalSum = 0;
+      let totalCount = 0;
+      const averages = [];
+
+      axes.forEach(section => {
+        const radios = document.querySelectorAll(`#${section.id} input[type="radio"]:checked`);
+        let sum = 0;
+        let validCount = 0;
+        radios.forEach(radio => {
+          const value = parseFloat(radio.value);
+          if (!isNaN(value)) {
+            sum += value;
+            validCount++;
+          }
+        });
+        const avg = validCount > 0 ? (sum / validCount).toFixed(2) : 0;
+        document.getElementById(section.avgId).textContent = avg;
+        averages.push(avg);
+        totalSum += sum;
+        totalCount += validCount;
+      });
+
+      const overallAvg = totalCount > 0 ? (totalSum / totalCount).toFixed(2) : 0;
+      document.getElementById('overall_avg').textContent = overallAvg;
+
+      // Update smart analysis
+      const smartAnalysisTable = document.getElementById('smart_analysis').querySelector('tbody');
+      smartAnalysisTable.innerHTML = `
+        <tr><td>تحلیل توانایی</td><td>میانگین کل: ${overallAvg}</td></tr>
+        <tr><td>تحلیل هوش</td><td>بر اساس امتیازات، عملکرد در سطح ${overallAvg >= 3 ? 'خوب' : overallAvg >= 2 ? 'متوسط' : 'نیاز به بهبود'} است.</td></tr>
+        <tr><td>تحلیل روانشناسی</td><td>تعامل و ارتباط: ${document.getElementById('avg5').textContent}</td></tr>
+        <tr><td>تحلیل عملکرد کلی</td><td>عملکرد کلی در محورها: ${averages.join(', ')}</td></tr>
+        <tr><td>تحلیل نقاط قوت و ضعف</td><td>بر اساس محورها، نقاط قوت در محورهای با امتیاز بالاتر از ۳ و نقاط ضعف در محورهای کمتر از ۲ شناسایی شده‌اند.</td></tr>
+        <tr><td>پیشنهادات</td><td>تمرکز بر بهبود محورهای با امتیاز کمتر از ۲.</td></tr>
+        <tr><td>وضعیت پاداش/تشویق</td><td>${overallAvg >= 3.5 ? 'واجد شرایط تشویق' : 'نیاز به بررسی بیشتر'}</td></tr>
+      `;
+
+      updateChart();
+    }
+
+    /**
+     * Auto-save form
+     */
+    function autoSaveForm() {
+      saveForm(true);
+    }
+
+    /**
+     * Save form
+     */
+    function saveForm(isAuto = false) {
+      const formData = {
+        teacher_name: document.getElementById('teacher_name').value,
+        personnel_code: document.getElementById('personnel_code').value,
+        teacher_phone: document.getElementById('teacher_phone').value,
+        grade_level: document.getElementById('grade_level').value,
+        manager_name: document.getElementById('manager_name').value,
+        school_name: document.getElementById('school_name').value,
+        visitor_name: document.getElementById('visitor_name').value,
+        gender: document.getElementById('gender').value,
+        visit_date: document.getElementById('visit_date').value,
+        persian_date: document.getElementById('persian_date').value,
+        manager_phone: document.getElementById('manager_phone').value,
+        school_type: document.getElementById('school_type').value,
+        strengths: document.getElementById('strengths').value,
+        improvements: document.getElementById('improvements').value,
+        suggestions: document.getElementById('suggestions').value,
+        teacher_strengths: document.getElementById('teacher_strengths').value,
+        teacher_challenges: document.getElementById('teacher_challenges').value,
+        teacher_suggestions: document.getElementById('teacher_suggestions').value,
+        summary_teacher_name: document.getElementById('summary_teacher_name').value,
+        summary_grade: document.getElementById('summary_grade').value,
+        summary_experience: document.getElementById('summary_experience').value,
+        summary_school: document.getElementById('summary_school').value,
+        visitor_summary: document.getElementById('visitor_summary').value,
+        final_evaluation: document.getElementById('final_evaluation').value,
+        visitor_name_summary: document.getElementById('visitor_name_summary').value,
+        visitor_signature: visitorSigPad.toDataURL(),
+        teacher_signature: teacherSigPad.toDataURL(),
+        comments: Array.from(document.querySelectorAll('textarea:not(#strengths, #improvements, #suggestions, #teacher_strengths, #teacher_challenges, #teacher_suggestions, #visitor_summary, #final_evaluation, .analysis-textarea)')).map(textarea => textarea.value),
+        analysis_comments: Array.from(document.querySelectorAll('.analysis-textarea')).map(textarea => textarea.value),
+        scores: Array.from(document.querySelectorAll('input[type="radio"]:checked')).map(radio => parseFloat(radio.value)),
+        lastUpdated: new Date().toISOString()
+      };
+
+      const key = `inspection_form_${formData.personnel_code}_${formData.visit_date}`;
+      localStorage.setItem(key, JSON.stringify(formData));
+      loadFormList();
+      loadSavedFormsTable();
+
+      if (!isAuto) {
+        Swal.fire({
+          icon: 'success',
+          title: 'ذخیره شد',
+          text: 'فرم با موفقیت ذخیره شد.',
+        });
+      }
+    }
+
+    /**
+     * Preview form
+     */
+    function previewForm() {
+      const formData = {
+        teacher_name: document.getElementById('teacher_name').value,
+        personnel_code: document.getElementById('personnel_code').value,
+        persian_date: document.getElementById('persian_date').value,
+        avg1: document.getElementById('avg1').textContent,
+        avg2: document.getElementById('avg2').textContent,
+        avg3: document.getElementById('avg3').textContent,
+        avg4: document.getElementById('avg4').textContent,
+        avg5: document.getElementById('avg5').textContent,
+        avg6: document.getElementById('avg6').textContent,
+        overall_avg: document.getElementById('overall_avg').textContent
+      };
+
+      Swal.fire({
+        title: 'پیش‌نمایش گزارش',
+        html: `
+          <p><b>نام آموزگار:</b> ${formData.teacher_name}</p>
+          <p><b>کد پرسنلی:</b> ${formData.personnel_code}</p>
+          <p><b>تاریخ بازدید (شمسی):</b> ${formData.persian_date}</p>
+          <p><b>میانگین محور ۱:</b> ${formData.avg1}</p>
+          <p><b>میانگین محور ۲:</b> ${formData.avg2}</p>
+          <p><b>میانگین محور ۳:</b> ${formData.avg3}</p>
+          <p><b>میانگین محور ۴:</b> ${formData.avg4}</p>
+          <p><b>میانگین محور ۵:</b> ${formData.avg5}</p>
+          <p><b>میانگین محور ۶:</b> ${formData.avg6}</p>
+          <p><b>معدل کل:</b> ${formData.overall_avg}</p>
+        `,
+        icon: 'info',
+        confirmButtonText: 'باشه'
+      });
+    }
+
+    /**
+     * Print form as PDF
+     */
+    function printForm() {
+      const formData = {
+        teacher_name: document.getElementById('teacher_name').value,
+        personnel_code: document.getElementById('personnel_code').value,
+        persian_date: document.getElementById('persian_date').value,
+        avg1: document.getElementById('avg1').textContent,
+        avg2: document.getElementById('avg2').textContent,
+        avg3: document.getElementById('avg3').textContent,
+        avg4: document.getElementById('avg4').textContent,
+        avg5: document.getElementById('avg5').textContent,
+        avg6: document.getElementById('avg6').textContent,
+        overall_avg: document.getElementById('overall_avg').textContent,
+        visitor_summary: document.getElementById('visitor_summary').value,
+        final_evaluation: document.getElementById('final_evaluation').value
+      };
+
+      const printWindow = window.open('', '_blank');
+      printWindow.document.write(`
+        <html dir="rtl">
+        <head>
+          <meta charset="UTF-8">
+          <title>گزارش بازدید</title>
+          <style>
+            body { font-family: 'Vazir', sans-serif; padding: 20px; }
+            h1 { text-align: center; color: #b91c1c; }
+            p { margin: 10px 0; }
+            .signature { max-width: 200px; height: auto; }
+          </style>
+        </head>
+        <body>
+          <h1>گزارش بازدید و نظارت آموزشی</h1>
+          <p><b>نام آموزگار:</b> ${formData.teacher_name}</p>
+          <p><b>کد پرسنلی:</b> ${formData.personnel_code}</p>
+          <p><b>تاریخ بازدید (شمسی):</b> ${formData.persian_date}</p>
+          <p><b>میانگین محور ۱:</b> ${formData.avg1}</p>
+          <p><b>میانگین محور ۲:</b> ${formData.avg2}</p>
+          <p><b>میانگین محور ۳:</b> ${formData.avg3}</p>
+          <p><b>میانگین محور ۴:</b> ${formData.avg4}</p>
+          <p><b>میانگین محور ۵:</b> ${formData.avg5}</p>
+          <p><b>میانگین محور ۶:</b> ${formData.avg6}</p>
+          <p><b>معدل کل:</b> ${formData.overall_avg}</p>
+          <p><b>جمع‌بندی بازدیدکننده:</b> ${formData.visitor_summary}</p>
+          <p><b>ارزیابی نهایی:</b> ${formData.final_evaluation}</p>
+          <p><b>امضای بازدیدکننده:</b></p>
+          <img src="${visitorSigPad.toDataURL()}" class="signature">
+          <p><b>امضای آموزگار:</b></p>
+          <img src="${teacherSigPad.toDataURL()}" class="signature">
+        </body>
+        </html>
+      `);
+      printWindow.document.close();
+      printWindow.print();
+    }
+
+    /**
+     * Export to JSON
+     */
+    function exportToJSON() {
+      const formData = {
+        teacher_name: document.getElementById('teacher_name').value,
+        personnel_code: document.getElementById('personnel_code').value,
+        teacher_phone: document.getElementById('teacher_phone').value,
+        grade_level: document.getElementById('grade_level').value,
+        manager_name: document.getElementById('manager_name').value,
+        school_name: document.getElementById('school_name').value,
+        visitor_name: document.getElementById('visitor_name').value,
+        gender: document.getElementById('gender').value,
+        visit_date: document.getElementById('visit_date').value,
+        persian_date: document.getElementById('persian_date').value,
+        manager_phone: document.getElementById('manager_phone').value,
+        school_type: document.getElementById('school_type').value,
+        strengths: document.getElementById('strengths').value,
+        improvements: document.getElementById('improvements').value,
+        suggestions: document.getElementById('suggestions').value,
+        teacher_strengths: document.getElementById('teacher_strengths').value,
+        teacher_challenges: document.getElementById('teacher_challenges').value,
+        teacher_suggestions: document.getElementById('teacher_suggestions').value,
+        summary_teacher_name: document.getElementById('summary_teacher_name').value,
+        summary_grade: document.getElementById('summary_grade').value,
+        summary_experience: document.getElementById('summary_experience').value,
+        summary_school: document.getElementById('summary_school').value,
+        visitor_summary: document.getElementById('visitor_summary').value,
+        final_evaluation: document.getElementById('final_evaluation').value,
+        visitor_name_summary: document.getElementById('visitor_name_summary').value,
+        visitor_signature: visitorSigPad.toDataURL(),
+        teacher_signature: teacherSigPad.toDataURL(),
+        comments: Array.from(document.querySelectorAll('textarea:not(#strengths, #improvements, #suggestions, #teacher_strengths, #teacher_challenges, #teacher_suggestions, #visitor_summary, #final_evaluation, .analysis-textarea)')).map(textarea => textarea.value),
+        analysis_comments: Array.from(document.querySelectorAll('.analysis-textarea')).map(textarea => textarea.value),
+        scores: Array.from(document.querySelectorAll('input[type="radio"]:checked')).map(radio => parseFloat(radio.value)),
+        lastUpdated: new Date().toISOString()
+      };
+
+      const dataStr = JSON.stringify(formData, null, 2);
+      const blob = new Blob([dataStr], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `inspection_form_${formData.personnel_code}_${formData.visit_date}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    /**
+     * Import from JSON
+     */
+    function importFromJSON() {
+      document.getElementById('json_import_file').click();
+      document.getElementById('json_import_file').onchange = function(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          try {
+            const formData = JSON.parse(e.target.result);
+            document.getElementById('teacher_name').value = formData.teacher_name || '';
+            document.getElementById('personnel_code').value = formData.personnel_code || '';
+            document.getElementById('teacher_phone').value = formData.teacher_phone || '';
+            document.getElementById('grade_level').value = formData.grade_level || '';
+            document.getElementById('manager_name').value = formData.manager_name || '';
+            document.getElementById('school_name').value = formData.school_name || '';
+            document.getElementById('visitor_name').value = formData.visitor_name || '';
+            document.getElementById('gender').value = formData.gender || '';
+            document.getElementById('visit_date').value = formData.visit_date || '';
+            document.getElementById('persian_date').value = formData.persian_date || '';
+            document.getElementById('manager_phone').value = formData.manager_phone || '';
+            document.getElementById('school_type').value = formData.school_type || '';
+            document.getElementById('summary_teacher_name').value = formData.summary_teacher_name || '';
+            document.getElementById('summary_grade').value = formData.summary_grade || '';
+            document.getElementById('summary_experience').value = formData.summary_experience || '';
+            document.getElementById('summary_school').value = formData.summary_school || '';
+            document.getElementById('visitor_summary').value = formData.visitor_summary || '';
+            document.getElementById('final_evaluation').value = formData.final_evaluation || '';
+            document.getElementById('visitor_name_summary').value = formData.visitor_name_summary || '';
+            document.getElementById('visit_date_summary').value = formData.visit_date || '';
+            document.getElementById('persian_date_summary').value = formData.persian_date || '';
+            document.getElementById('strengths').value = formData.strengths || '';
+            document.getElementById('improvements').value = formData.improvements || '';
+            document.getElementById('suggestions').value = formData.suggestions || '';
+            document.getElementById('teacher_strengths').value = formData.teacher_strengths || '';
+            document.getElementById('teacher_challenges').value = formData.teacher_challenges || '';
+            document.getElementById('teacher_suggestions').value = formData.teacher_suggestions || '';
+
+            const textareas = document.querySelectorAll('textarea:not(#strengths, #improvements, #suggestions, #teacher_strengths, #teacher_challenges, #teacher_suggestions, #visitor_summary, #final_evaluation, .analysis-textarea)');
+            formData.comments.forEach((comment, index) => {
+              if (textareas[index]) textareas[index].value = comment || '';
+            });
+
+            const analysisTextareas = document.querySelectorAll('.analysis-textarea');
+            formData.analysis_comments.forEach((comment, index) => {
+              if (analysisTextareas[index]) analysisTextareas[index].value = comment || '';
+            });
+
+            document.querySelectorAll('input[type="radio"]').forEach(radio => {
+              radio.checked = false;
+            });
+            formData.scores.forEach((score, index) => {
+              const radio = document.querySelector(`input[name="axis${Math.floor(index / 10) + 1}_${(index % 10) + 1}"][value="${score}"]`);
+              if (radio) radio.checked = true;
+            });
+
+            visitorSigPad.fromDataURL(formData.visitor_signature || '');
+            teacherSigPad.fromDataURL(formData.teacher_signature || '');
+
+            calculateAverages();
+            Swal.fire({
+              icon: 'success',
+              title: 'ورود موفقیت‌آمیز',
+              text: 'فرم با موفقیت از JSON وارد شد.',
+            });
+          } catch (error) {
+            Swal.fire({
+              icon: 'error',
+              title: 'خطا',
+              text: 'فایل JSON معتبر نیست.',
+            });
+          }
+        };
+        reader.readAsText(file);
+      };
+    }
+
+    /**
+     * Export to Excel
+     */
+    function exportToExcel() {
+      const formData = {
+        teacher_name: document.getElementById('teacher_name').value,
+        personnel_code: document.getElementById('personnel_code').value,
+        teacher_phone: document.getElementById('teacher_phone').value,
+        grade_level: document.getElementById('grade_level').value,
+        manager_name: document.getElementById('manager_name').value,
+        school_name: document.getElementById('school_name').value,
+        visitor_name: document.getElementById('visitor_name').value,
+        gender: document.getElementById('gender').value,
+        visit_date: document.getElementById('visit_date').value,
+        persian_date: document.getElementById('persian_date').value,
+        manager_phone: document.getElementById('manager_phone').value,
+        school_type: document.getElementById('school_type').value,
+        strengths: document.getElementById('strengths').value,
+        improvements: document.getElementById('improvements').value,
+        suggestions: document.getElementById('suggestions').value,
+        teacher_strengths: document.getElementById('teacher_strengths').value,
+        teacher_challenges: document.getElementById('teacher_challenges').value,
+        teacher_suggestions: document.getElementById('teacher_suggestions').value,
+        summary_teacher_name: document.getElementById('summary_teacher_name').value,
+        summary_grade: document.getElementById('summary_grade').value,
+        summary_experience: document.getElementById('summary_experience').value,
+        summary_school: document.getElementById('summary_school').value,
+        visitor_summary: document.getElementById('visitor_summary').value,
+        final_evaluation: document.getElementById('final_evaluation').value,
+        visitor_name_summary: document.getElementById('visitor_name_summary').value,
+        avg1: document.getElementById('avg1').textContent,
+        avg2: document.getElementById('avg2').textContent,
+        avg3: document.getElementById('avg3').textContent,
+        avg4: document.getElementById('avg4').textContent,
+        avg5: document.getElementById('avg5').textContent,
+        avg6: document.getElementById('avg6').textContent,
+        overall_avg: document.getElementById('overall_avg').textContent
+      };
+
+      const ws_data = [
+        ['نام آموزگار', formData.teacher_name],
+        ['کد پرسنلی', formData.personnel_code],
+        ['شماره همراه آموزگار', formData.teacher_phone],
+        ['پایه تحصیلی', formData.grade_level],
+        ['نام مدیر', formData.manager_name],
+        ['نام مدرسه', formData.school_name],
+        ['نام بازدیدکننده', formData.visitor_name],
+        ['جنسیت', formData.gender],
+        ['تاریخ بازدید (میلادی)', formData.visit_date],
+        ['تاریخ بازدید (شمسی)', formData.persian_date],
+        ['شماره همراه مدیر', formData.manager_phone],
+        ['نوع مدرسه', formData.school_type],
+        ['نقاط قوت', formData.strengths],
+        ['نقاط قابل بهبود', formData.improvements],
+        ['پیشنهادات', formData.suggestions],
+        ['نقاط قوت معلم', formData.teacher_strengths],
+        ['چالش‌های معلم', formData.teacher_challenges],
+        ['پیشنهادات معلم', formData.teacher_suggestions],
+        ['نام آموزگار (جمع‌بندی)', formData.summary_teacher_name],
+        ['پایه تحصیلی (جمع‌بندی)', formData.summary_grade],
+        ['سابقه تدریس', formData.summary_experience],
+        ['مدرسه (جمع‌بندی)', formData.summary_school],
+        ['جمع‌بندی بازدیدکننده', formData.visitor_summary],
+        ['ارزیابی نهایی', formData.final_evaluation],
+        ['نام بازدیدکننده (جمع‌بندی)', formData.visitor_name_summary],
+        ['میانگین محور ۱', formData.avg1],
+        ['میانگین محور ۲', formData.avg2],
+        ['میانگین محور ۳', formData.avg3],
+        ['میانگین محور ۴', formData.avg4],
+        ['میانگین محور ۵', formData.avg5],
+        ['میانگین محور ۶', formData.avg6],
+        ['معدل کل', formData.overall_avg]
+      ];
+
+      const ws = XLSX.utils.aoa_to_sheet(ws_data);
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, 'Inspection Form');
+      XLSX.writeFile(wb, `inspection_form_${formData.personnel_code}_${formData.visit_date}.xlsx`);
+    }
+
+    /**
+     * Import from Excel
+     */
+    function importFromExcel() {
+      document.getElementById('excel_import_file').click();
+      document.getElementById('excel_import_file').onchange = function(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          try {
+            const data = new Uint8Array(e.target.result);
+            const workbook = XLSX.read(data, { type: 'array' });
+            const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+            const jsonData = XLSX.utils.sheet_to_json(firstSheet, { header: 1 });
+
+            const formData = {};
+            jsonData.forEach(row => {
+              if (row[0] && row[1]) {
+                formData[row[0]] = row[1];
+              }
+            });
+
+            document.getElementById('teacher_name').value = formData['نام آموزگار'] || '';
+            document.getElementById('personnel_code').value = formData['کد پرسنلی'] || '';
+            document.getElementById('teacher_phone').value = formData['شماره همراه آموزگار'] || '';
+            document.getElementById('grade_level').value = formData['پایه تحصیلی'] || '';
+            document.getElementById('manager_name').value = formData['نام مدیر'] || '';
+            document.getElementById('school_name').value = formData['نام مدرسه'] || '';
+            document.getElementById('visitor_name').value = formData['نام بازدیدکننده'] || '';
+            document.getElementById('gender').value = formData['جنسیت'] || '';
+            document.getElementById('visit_date').value = formData['تاریخ بازدید (میلادی)'] || '';
+            document.getElementById('persian_date').value = formData['تاریخ بازدید (شمسی)'] || '';
+            document.getElementById('manager_phone').value = formData['شماره همراه مدیر'] || '';
+            document.getElementById('school_type').value = formData['نوع مدرسه'] || '';
+            document.getElementById('strengths').value = formData['نقاط قوت'] || '';
+            document.getElementById('improvements').value = formData['نقاط قابل بهبود'] || '';
+            document.getElementById('suggestions').value = formData['پیشنهادات'] || '';
+            document.getElementById('teacher_strengths').value = formData['نقاط قوت معلم'] || '';
+            document.getElementById('teacher_challenges').value = formData['چالش‌های معلم'] || '';
+            document.getElementById('teacher_suggestions').value = formData['پیشنهادات معلم'] || '';
+            document.getElementById('summary_teacher_name').value = formData['نام آموزگار (جمع‌بندی)'] || '';
+            document.getElementById('summary_grade').value = formData['پایه تحصیلی (جمع‌بندی)'] || '';
+            document.getElementById('summary_experience').value = formData['سابقه تدریس'] || '';
+            document.getElementById('summary_school').value = formData['مدرسه (جمع‌بندی)'] || '';
+            document.getElementById('visitor_summary').value = formData['جمع‌بندی بازدیدکننده'] || '';
+            document.getElementById('final_evaluation').value = formData['ارزیابی نهایی'] || '';
+            document.getElementById('visitor_name_summary').value = formData['نام بازدیدکننده (جمع‌بندی)'] || '';
+            document.getElementById('visit_date_summary').value = formData['تاریخ بازدید (میلادی)'] || '';
+            document.getElementById('persian_date_summary').value = formData['تاریخ بازدید (شمسی)'] || '';
+
+            calculateAverages();
+            Swal.fire({
+              icon: 'success',
+              title: 'ورود موفقیت‌آمیز',
+              text: 'فرم با موفقیت از اکسل وارد شد.',
+            });
+          } catch (error) {
+            Swal.fire({
+              icon: 'error',
+              title: 'خطا',
+              text: 'فایل اکسل معتبر نیست.',
+            });
+          }
+        };
+        reader.readAsArrayBuffer(file);
+      };
+    }
+
+    /**
+     * Clear form
+     */
+    function clearForm() {
+      Swal.fire({
+        title: 'آیا مطمئن هستید؟',
+        text: 'تمام اطلاعات فرم پاک خواهد شد.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'بله، پاک کن',
+        cancelButtonText: 'خیر'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          document.querySelectorAll('input[type="text"], input[type="tel"], input[type="date"], select, textarea').forEach(field => {
+            field.value = '';
+          });
+          document.querySelectorAll('input[type="radio"]').forEach(radio => {
+            radio.checked = false;
+          });
+          visitorSigPad.clear();
+          teacherSigPad.clear();
+          calculateAverages();
+          Swal.fire({
+            icon: 'success',
+            title: 'پاک شد',
+            text: 'فرم با موفقیت پاک شد.',
+          });
+        }
+      });
+    }
+
+    /**
+     * Clear all data
+     */
+    function clearAllData() {
+      Swal.fire({
+        title: 'آیا مطمئن هستید؟',
+        text: 'تمام اطلاعات ذخیره‌شده پاک خواهد شد.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'بله، پاک کن',
+        cancelButtonText: 'خیر'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          Object.keys(localStorage)
+            .filter(key => key.startsWith('inspection_form_'))
+            .forEach(key => localStorage.removeItem(key));
+          loadFormList();
+          loadSavedFormsTable();
+          clearForm();
+          Swal.fire({
+            icon: 'success',
+            title: 'پاک شد',
+            text: 'تمام اطلاعات با موفقیت پاک شد.',
+          });
+        }
+      });
+    }
+   </script>
+</body>
+</html> 
